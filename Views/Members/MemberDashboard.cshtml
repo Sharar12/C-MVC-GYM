@@ -1,0 +1,216 @@
+﻿@model GYM.Models.Member
+
+@{
+    ViewData["Title"] = "Member Dashboard";
+
+    double heightInMeters = Model.height / 100.0;
+    double bmi = Model.weight / (heightInMeters * heightInMeters);
+
+    double bmr = Model.gender.ToLower() == "male"
+        ? 10 * Model.weight + 6.25 * Model.height - 5 * Model.age + 5
+        : 10 * Model.weight + 6.25 * Model.height - 5 * Model.age - 161;
+
+    double activityLevel = 1.55; // Moderate Activity Level
+    double tdee = bmr * activityLevel;
+
+    double bodyFat = Model.gender.ToLower() == "male"
+        ? 1.20 * bmi + 0.23 * Model.age - 16.2
+        : 1.20 * bmi + 0.23 * Model.age - 5.4;
+
+    double lbm = Model.weight * (1 - (bodyFat / 100));
+
+    string healthComment = "";
+
+    if (bmi < 18.5)
+    {
+        healthComment = "⚠️ You are underweight. Consider a healthy diet plan and strength training.";
+    }
+    else if (bmi >= 18.5 && bmi <= 24.9)
+    {
+        healthComment = "✅ You are in a healthy weight range. Keep it up!";
+    }
+    else if (bmi >= 25 && bmi <= 29.9)
+    {
+        healthComment = "⚠️ You are overweight. Include more physical activity and monitor your diet.";
+    }
+    else
+    {
+        healthComment = "🚨 You are obese. It's important to consult a healthcare provider.";
+    }
+
+    // Placeholder for Gemini API call - replace with actual API call
+    string geminiResponse = GetGeminiSuggestions(Model.gender, Model.age, bmi, activityLevel);
+
+    // Split the response into food and exercise suggestions
+    string[] suggestions = geminiResponse.Split(new string[] { "[Food Suggestions]", "[Exercise Suggestions]" }, StringSplitOptions.None);
+    string foodSuggestions = suggestions.Length > 1 ? suggestions[1].Trim() : "No food suggestions available.";
+    string exerciseSuggestions = suggestions.Length > 2 ? suggestions[2].Trim() : "No exercise suggestions available.";
+}
+
+@functions {
+    // Placeholder function for Gemini API call.  Replace this with your actual API call.
+    public static string GetGeminiSuggestions(string gender, int age, double bmi, double activityLevel)
+    {
+        // Simulate different responses based on health status
+        string response = "";
+        if (bmi < 18.5) // Underweight
+        {
+            response = "[Food Suggestions]\n" +
+                       "- Nutrient-dense foods: whole milk, nuts, seeds, avocados, lean meats.\n" +
+                       "- Complex carbohydrates: brown rice, quinoa, whole-wheat bread.\n" +
+                       "- Healthy fats: olive oil, fatty fish.\n" +
+                       "- Increase portion sizes gradually.\n" +
+                       "[Exercise Suggestions]\n" +
+                       "- Strength training: 2-3 times per week (focus on major muscle groups).\n" +
+                       "- Moderate cardio: 2-3 times per week (e.g., brisk walking).\n" +
+                       "- Focus on proper form and gradual progression.\n" +
+                       "- Consider consulting a physical therapist.";
+        }
+        else if (bmi >= 18.5 && bmi <= 24.9) // Healthy weight
+        {
+            response = "[Food Suggestions]\n" +
+                       "- Balanced diet: fruits, vegetables, whole grains, lean protein.\n" +
+                       "- Limit processed foods, sugary drinks, and excessive saturated fats.\n" +
+                       "- Stay hydrated: drink plenty of water.\n" +
+                       "[Exercise Suggestions]\n" +
+                       "- Regular cardio: at least 150 minutes of moderate-intensity or 75 minutes of vigorous-intensity aerobic activity per week\n" +
+                       "- Strength training: 2 or more days a week.\n" +
+                       "- Include flexibility exercises: stretching, yoga, or tai chi.";
+        }
+        else if (bmi >= 25 && bmi <= 29.9) // Overweight
+        {
+            response = "[Food Suggestions]\n" +
+                       "- Calorie control: focus on portion control and reducing overall calorie intake.\n" +
+                       "- High in fiber: whole grains, legumes, vegetables, and fruits.\n" +
+                       "- Lean protein: chicken breast, fish, beans, tofu.\n" +
+                       "- Limit processed foods, sugary drinks, and alcohol.\n" +
+                       "[Exercise Suggestions]\n" +
+                       "- Increase cardio: aim for 30 minutes of moderate-intensity exercise most days of the week.\n" +
+                       "- Strength training: 2-3 times per week to build muscle mass, which helps burn calories.\n" +
+                       "- Include activities you enjoy: swimming, cycling, brisk walking.\n" +
+                       "- Consider a combination of cardio and strength training.";
+        }
+        else // Obese
+        {
+            response = "[Food Suggestions]\n" +
+                       "- Consult a registered dietitian or nutritionist for a personalized plan.\n" +
+                       "- Focus on whole, unprocessed foods: vegetables, fruits, lean protein, whole grains.\n" +
+                       "- Limit sugary drinks, processed foods, unhealthy fats, and alcohol.\n" +
+                       "- Very low calorie diets should only be followed under medical supervision.\n" +
+                       "[Exercise Suggestions]\n" +
+                       "- Consult a healthcare professional before starting any exercise program.\n" +
+                       "- Start slowly and gradually increase intensity and duration.\n" +
+                       "- Low-impact activities: walking, swimming, cycling.\n" +
+                       "- Aim for at least 150 minutes of moderate-intensity or 75 minutes of vigorous-intensity aerobic activity per week.\n" +
+                       "- Strength training: 2 or more days a week, focusing on major muscle groups.\n" +
+                       "- Consider exercises that improve mobility and balance.";
+        }
+        return response;
+    }
+}
+
+<h2 class="text-center mt-4">🏋️‍♂️ Member Dashboard</h2>
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-body">
+                    <!-- Profile Box -->
+                    <div class="mb-4">
+                        <h4 class="card-title text-center mb-3">👤 Profile Details</h4>
+                        <div class="card shadow-sm p-3 mb-3 bg-light rounded">
+                            <p><strong>ID:</strong> @Model.Id</p>
+                            <p><strong>Name:</strong> @Model.name</p>
+                            <p><strong>Email:</strong> @Model.email</p>
+                           
+                            <p><strong>Phone:</strong><b>(+880)</b>@Model.phone</p>
+                            <p><strong>Address:</strong> @Model.Address</p>
+                            
+                            
+                        </div>
+                    </div>
+
+                    <!-- Physical Information Box -->
+                    <div class="mb-4">
+                        <h4 class="card-title text-center mb-3">🏋️‍♂️ Physical Information</h4>
+                        <div class="card shadow-sm p-3 mb-3 bg-light rounded">
+                            <p><strong>Gender:</strong> @Model.gender</p>
+                            <p><strong>Age:</strong> @Model.age</p>
+                            <p><strong>Weight:</strong> @Model.weight kg</p>
+                            <p><strong>Height:</strong> @Model.height cm</p>
+                            
+                        </div>
+                    </div>
+
+                    <!-- Payment Information Box -->
+                    <div class="mb-4">
+                        <h4 class="card-title text-center mb-3">💳 Payment Information</h4>
+                        <div class="card shadow-sm p-3 mb-3 bg-light rounded">
+                            <p><strong>Package:</strong> @Model.package</p>
+                            <p><strong>Payment Method:</strong> @Model.paymentMethod</p>
+                            <p><strong>Credit Card No.:</strong> @Model.CreditCardNumber</p>
+                            <p><strong>Transaction ID:</strong> @Model.Tid</p>
+                            <p><strong>Amount: Tk.</strong> @Model.amount</p>
+                            <p><strong>Expire Date:</strong> @Model.Expire</p>
+                        </div>
+                    </div>
+
+                    <!-- Health Metrics Box -->
+                    <h4 class="card-title text-center mb-3">📊 Health Metrics</h4>
+                    <div class="card shadow-sm p-3 mb-3 bg-light rounded">
+                        <p>
+                            <strong>🧮 BMI:</strong> @bmi.ToString("0.00")
+                            <br><small class="text-muted">Body Mass Index (BMI) is a measure of body fat based on height and weight. It helps assess whether you are underweight, healthy weight, overweight, or obese.</small>
+                        </p>
+
+                        <p>
+                            <strong>🔥 BMR:</strong> @bmr.ToString("0") Calories/day
+                            <br><small class="text-muted">Basal Metabolic Rate (BMR) is the number of calories your body needs to perform basic life-sustaining functions, like breathing and digestion, while at rest.</small>
+                        </p>
+
+                        <p>
+                            <strong>⚡ TDEE:</strong> @tdee.ToString("0") Calories/day
+                            <br><small class="text-muted">Total Daily Energy Expenditure (TDEE) represents the total number of calories you burn in a day, including all activities like exercise, work, and daily movements.</small>
+                        </p>
+
+                        <p>
+                            <strong>🩻 Body Fat %:</strong> @bodyFat.ToString("0.0")%
+                            <br><small class="text-muted">Body Fat Percentage is the proportion of your body weight that comes from fat. A lower body fat percentage is generally associated with better health.</small>
+                        </p>
+
+                        <p>
+                            <strong>💪 Lean Body Mass:</strong> @lbm.ToString("0.0") kg
+                            <br><small class="text-muted">Lean Body Mass (LBM) is the weight of everything in your body except fat, including muscles, bones, and organs. It's a key indicator of muscle mass and overall fitness.</small>
+                        </p>
+                    </div>
+
+
+                    <div class="alert alert-info text-center mt-4">
+                        <strong>🩺 Health Comment:</strong><br />
+                        @healthComment
+                    </div>
+
+                    <!-- Diet Suggestions Box -->
+                    <hr />
+                    <h4 class="card-title text-center mb-3">🥗 Diet Suggestions</h4>
+                    <div class="card shadow-sm p-3 mb-3 bg-light rounded">
+                        <p>@Html.Raw(foodSuggestions.Replace("\n", "<br />"))</p>
+                    </div>
+
+                    <!-- Exercise Suggestions Box -->
+                    <hr />
+                    <h4 class="card-title text-center mb-3">💪 Exercise Suggestions</h4>
+                    <div class="card shadow-sm p-3 mb-3 bg-light rounded">
+                        <p>@Html.Raw(exerciseSuggestions.Replace("\n", "<br />"))</p>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <a asp-action="EditMember" asp-controller="Members" asp-route-id="@Model.Id" class="btn btn-primary me-3">✏️ Edit Profile</a>
+                        <a href="/Home/Index" class="btn btn-secondary">🚪 Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

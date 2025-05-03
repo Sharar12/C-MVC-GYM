@@ -1,0 +1,59 @@
+﻿@model GYM.Models.Member
+
+@{
+    ViewData["Title"] = "Assign Class/Schedule";
+}
+
+<h2 class="text-center mt-4">Assign Class/Schedule</h2>
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-body">
+                    <form method="post" asp-action="AssignClassSchedule" asp-controller="Members">
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="form-group">
+                            <label for="Name">Name:</label>
+                            <input type="text" id="Name" class="form-control" value="@Model.name" readonly />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="Class">Class:</label>
+                            <select id="Class" asp-for="Class" class="form-control">
+                                <option value="" disabled selected>Select a class</option>
+                                <option value="Yoga">Yoga</option>
+                                <option value="Pilates">Pilates</option>
+                                <option value="Cardio">Cardio</option>
+                                <option value="Strength Training">Strength Training</option>
+                                <option value="Zumba">Zumba</option>
+                                <option value="CrossFit">CrossFit</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="Schedule">Schedule (Time):</label>
+                            <select id="Schedule" asp-for="Schedule" class="form-control">
+                                <option value="" disabled selected>Select a time slot</option>
+                                <option value="06:00 AM - 07:00 AM">06:00 AM - 07:00 AM</option>
+                                <option value="07:00 AM - 08:00 AM">07:00 AM - 08:00 AM</option>
+                                <option value="08:00 AM - 09:00 AM">08:00 AM - 09:00 AM</option>
+                                <option value="10:00 AM - 11:00 AM">10:00 AM - 11:00 AM</option>
+                                <option value="12:00 PM - 01:00 PM">12:00 PM - 01:00 PM</option>
+                                <option value="01:00 PM - 02:00 PM">01:00 PM - 02:00 PM</option>
+                                <option value="03:00 PM - 04:00 PM">03:00 PM - 04:00 PM</option>
+                                <option value="04:00 PM - 05:00 PM">04:00 PM - 05:00 PM</option>
+                                <option value="06:00 PM - 07:00 PM">06:00 PM - 07:00 PM</option>
+                                <option value="07:00 PM - 08:00 PM">07:00 PM - 08:00 PM</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary mt-3">Update</button>
+                        <a asp-action="ViewMembers" asp-controller="Employees" class="btn btn-secondary mt-3">Back to List</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,166 @@
+﻿@model GYM.Models.Member
+
+@{
+    ViewData["Title"] = "Edit Member";
+}
+
+<h1 class="text-center mt-4">✏️ Edit Member</h1>
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-body">
+                    <h4 class="card-title text-center mb-4">Edit Member Information</h4>
+                    <hr />
+
+                    <form asp-action="Edit">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="Id" />
+                        
+                        <!-- Name -->
+                        <div class="form-group mb-3">
+                            <label asp-for="name" class="control-label"></label>
+                            <input asp-for="name" class="form-control" />
+                            <span asp-validation-for="name" class="text-danger"></span>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="form-group mb-3">
+                            <label asp-for="email" class="control-label"></label>
+                            <input asp-for="email" class="form-control" />
+                            <span asp-validation-for="email" class="text-danger"></span>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="form-group mb-3">
+                            <label asp-for="password" class="control-label"></label>
+                            <input asp-for="password" class="form-control" />
+                            <span asp-validation-for="password" class="text-danger"></span>
+                        </div>
+
+                        <!-- Gender -->
+                        <div class="form-group mb-3">
+                            <label asp-for="gender" class="control-label"></label>
+                            <select class="form-select" name="gender" required>
+                                <option selected disabled value="">Choose...</option>
+                                <option>Male</option>
+                                <option>Female</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+
+                        <!-- Address -->
+                        <div class="form-group mb-3">
+                            <label asp-for="Address" class="control-label"></label>
+                            <input asp-for="Address" class="form-control" />
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                        </div>
+
+                        <!-- Phone -->
+                        <div class="form-group mb-3">
+                            <label asp-for="phone" class="control-label"></label>
+                            <input asp-for="phone" class="form-control" />
+                            <span asp-validation-for="phone" class="text-danger"></span>
+                        </div>
+
+                        <!-- Age -->
+                        <div class="form-group mb-3">
+                            <label asp-for="age" class="control-label"></label>
+                            <input asp-for="age" class="form-control" />
+                            <span asp-validation-for="age" class="text-danger"></span>
+                        </div>
+
+                        <!-- Weight -->
+                        <div class="form-group mb-3">
+                            <label asp-for="weight" class="control-label"></label>
+                            <input asp-for="weight" class="form-control" />
+                            <span asp-validation-for="weight" class="text-danger"></span>
+                        </div>
+
+                        <!-- Height -->
+                        <div class="form-group mb-3">
+                            <label asp-for="height" class="control-label"></label>
+                            <input asp-for="height" class="form-control" />
+                            <span asp-validation-for="height" class="text-danger"></span>
+                        </div>
+
+                        <!-- Package -->
+                        
+
+                        <!-- Payment Method -->
+                        
+
+                        <!-- Class -->
+                        <div class="form-group mb-3">
+                            <label asp-for="Class" class="control-label"></label>
+                            <select id="Class" asp-for="Class" class="form-control">
+                                <option value="" disabled selected>Select a class</option>
+                                <option value="Yoga">Yoga</option>
+                                <option value="Pilates">Pilates</option>
+                                <option value="Cardio">Cardio</option>
+                                <option value="Strength Training">Strength Training</option>
+                                <option value="Zumba">Zumba</option>
+                                <option value="CrossFit">CrossFit</option>
+                            </select>
+                        </div>
+
+                        <!-- Schedule -->
+                        <div class="form-group mb-3">
+                            <label asp-for="Schedule" class="control-label"></label>
+                            <select id="Schedule" asp-for="Schedule" class="form-control">
+                                <option value="" disabled selected>Select a time slot</option>
+                                <option value="06:00 AM - 07:00 AM">06:00 AM - 07:00 AM</option>
+                                <option value="07:00 AM - 08:00 AM">07:00 AM - 08:00 AM</option>
+                                <option value="08:00 AM - 09:00 AM">08:00 AM - 09:00 AM</option>
+                                <option value="10:00 AM - 11:00 AM">10:00 AM - 11:00 AM</option>
+                                <option value="12:00 PM - 01:00 PM">12:00 PM - 01:00 PM</option>
+                                <option value="01:00 PM - 02:00 PM">01:00 PM - 02:00 PM</option>
+                                <option value="03:00 PM - 04:00 PM">03:00 PM - 04:00 PM</option>
+                                <option value="04:00 PM - 05:00 PM">04:00 PM - 05:00 PM</option>
+                                <option value="06:00 PM - 07:00 PM">06:00 PM - 07:00 PM</option>
+                                <option value="07:00 PM - 08:00 PM">07:00 PM - 08:00 PM</option>
+                            </select>
+                        </div>
+
+                        <!-- Hidden Fields -->
+						@Html.HiddenFor(model => model.amount)
+                        @Html.HiddenFor(model => model.package)
+                        @Html.HiddenFor(model => model.paymentMethod)
+                        @Html.HiddenFor(model => model.CreditCardNumber)
+                        @Html.HiddenFor(model => model.Tid)
+                        @Html.HiddenFor(model => model.Expire)
+
+                        <!-- Save Button -->
+                        <div class="form-group">
+                            <input type="submit" value="Save" class="btn btn-primary btn-block" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+<!-- Optional custom styles -->
+<style>
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .btn-block {
+        width: 100%;
+    }
+
+    .control-label {
+        font-weight: bold;
+    }
+</style>

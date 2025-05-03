@@ -1,0 +1,203 @@
+﻿@model List<GYM.Models.Member>
+
+
+@using System;
+
+@{
+    ViewData["Title"] = "Members List";
+}
+
+<h2 class="text-center mt-4">🏋️‍♂️ Members List</h2>
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow-lg">
+                <div class="card-body">
+                    @if (Model != null && Model.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Gender</th>
+                                        <th>Address</th>
+                                        <th>Phone</th>
+                                        <th>Age</th>
+                                        <th>Weight (kg)</th>
+                                        <th>Height (cm)</th>
+                                        <th>BMI</th>
+                                        <th>BMR</th>
+                                        <th>TDEE</th>
+                                        <th>Body Fat %</th>
+                                        <th>LBM (kg)</th>
+                                        <th>Health Comment</th>
+                                        <th>Class</th>
+                                        <th>Schedule</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var member in Model)
+                                    {
+                                        // Nullable weight and height for calculations
+                                        double? weightKg = member.weight;
+                                        double? heightCm = member.height;
+                                        string gender = member.gender?.ToLower();
+                                        int age = member.age;
+
+                                        // Calculations
+                                        double? bmi = null;
+                                        double? bmr = null;
+                                        double? tdee = null;
+                                        double? bodyFatPercentage = null;
+                                        double? lbm = null;
+                                        string healthComment = "";
+
+                                        if (weightKg.HasValue && heightCm.HasValue)
+                                        {
+                                            // Helper conversions
+                                            double heightInMeters = heightCm.Value / 100.0;
+                                            bmi = weightKg / (heightInMeters * heightInMeters);
+                                            bmi = Math.Round(bmi.Value, 2);
+
+                                            bmr = gender == "male"
+                                            ? 10 * weightKg + 6.25 * heightCm - 5 * age + 5
+                                            : 10 * weightKg + 6.25 * heightCm - 5 * age - 161;
+                                            if (bmr.HasValue)
+                                                bmr = Math.Round(bmr.Value, 2);
+
+                                            double activityLevel = 1.55; // Example: Moderate activity
+                                            tdee = bmr * activityLevel;
+                                            if (tdee.HasValue)
+                                                tdee = Math.Round(tdee.Value, 2);
+
+                                            bodyFatPercentage = gender == "male"
+                                            ? 1.20 * bmi + 0.23 * age - 16.2
+                                            : 1.20 * bmi + 0.23 * age - 5.4;
+                                            if (bodyFatPercentage.HasValue)
+                                                bodyFatPercentage = Math.Round(bodyFatPercentage.Value, 2);
+
+                                            if (bodyFatPercentage.HasValue && weightKg.HasValue)
+                                            {
+                                                lbm = weightKg * (1 - (bodyFatPercentage / 100));
+                                                lbm = Math.Round(lbm.Value, 2);
+                                            }
+
+                                            // Health Comment
+                                            if (bmi.HasValue)
+                                            {
+                                                if (bmi < 18.5)
+                                                {
+                                                    healthComment = "Underweight";
+                                                }
+                                                else if (bmi >= 18.5 && bmi <= 24.9)
+                                                {
+                                                    healthComment = "Healthy";
+                                                }
+                                                else if (bmi >= 25 && bmi <= 29.9)
+                                                {
+                                                    healthComment = "Overweight";
+                                                }
+                                                else
+                                                {
+                                                    healthComment = "Obese";
+                                                }
+                                            }
+                                        }
+
+                                        <tr>
+                                            <td>@member.Id</td>
+                                            <td>@member.name</td>
+                                            <td>@member.email</td>
+                                            <td>@member.gender</td>
+                                            <td>@member.Address</td>
+                                            <td>@member.phone</td>
+                                            <td>@member.age</td>
+                                            <td>@member.weight</td>
+                                            <td>@member.height</td>
+                                            <td>@bmi</td>
+                                            <td>@bmr</td>
+                                            <td>@tdee</td>
+                                            <td>@bodyFatPercentage</td>
+                                            <td>@lbm</td>
+                                            <td>@healthComment</td>
+                                            <td>@member.Class</td>
+                                            <td>@member.Schedule</td>
+                                            <td>
+                                                <a href="@Url.Action("AssignClassSchedule", "Members", new { memberId = member.Id })" class="btn btn-primary">
+                                                    Assign Class/Schedule
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                            
+
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <!-- Back Button - Returns to Employee Dashboard with hardcoded ID=3 -->
+                            <a href="@Url.Action("EmployeeDashboard", "Employees", new { id = 10 })" class="btn btn-secondary btn-lg me-3">🔙 Back to Dashboard</a>
+                        </div>
+
+
+
+                    }
+                    else
+                    {
+                        <p class="text-center">No members found.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Optional: Add some custom styles -->
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    table {
+        white-space: nowrap;
+    }
+
+    td, th {
+        white-space: nowrap; /* Prevent text from breaking into a new line */
+        word-break: break-word; /* Break long words that overflow */
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    .table {
+        font-size: 14px;
+        border-collapse: collapse;
+    }
+
+        .table th, .table td {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        .table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: #f9f9f9;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+</style>
